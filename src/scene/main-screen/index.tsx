@@ -15,7 +15,7 @@ const Index = ({ navigation }: StackScreenProps<MainNavigationParams, 'MainScree
     () => Math.floor((Metrics.screenHeight - 56) / Metrics.getHeight(60)),
     []
   );
-  const { data: driversData, isLoading } = useGetDriversQuery({
+  const { data: driversData, isLoading, isError } = useGetDriversQuery({
     limit: minCountElems,
     offset: (page - 1) * minCountElems  ,
   },{ });
@@ -30,11 +30,17 @@ const Index = ({ navigation }: StackScreenProps<MainNavigationParams, 'MainScree
   return (
     <View style={styles.container}>
       <View style={styles.tableContainer}>
-        {isLoading ? (
+        {isLoading && (
           <View style={{alignItems: 'center'}}>
             <Text style={{fontSize: Metrics.getHeight(60)}}>LOADING</Text>
           </View>
-        ) : (
+        )}
+        {isError && (
+          <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize: Metrics.getHeight(60)}}>ERROR</Text>
+          </View>
+        )}
+        {!isLoading && !isError && (
           driversData?.MRData.DriverTable.Drivers.map(driver => (
             <TouchableOpacity
               style={styles.tableElement}

@@ -4,11 +4,12 @@ import {MainNavigationParams} from '../../navigations/main-navigation.tsx';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useGetDriverByIdQuery, useGetDriverResultsQuery} from '../../services/modules/drivers';
 import {styles} from './styles.ts';
+import Metrics from '../../utils/Metrics.ts';
 
 const Index = ({navigation, route} : StackScreenProps<MainNavigationParams, 'DriverScreen'>) => {
   const { driverId } = route.params;
-  const { data: driverData } = useGetDriverByIdQuery({id: driverId},{});
-  const { data: driverResultsData } = useGetDriverResultsQuery({id: driverId},{});
+  const { data: driverData, isLoading: isLoadingDriver, isError: isErrorDriver } = useGetDriverByIdQuery({id: driverId},{});
+  const { data: driverResultsData, isLoading: isLoadingDriverResults, isError: isErrorDriverResults } = useGetDriverResultsQuery({id: driverId},{});
   console.log(driverResultsData);
   return (
     <View style={styles.container}>
@@ -17,9 +18,17 @@ const Index = ({navigation, route} : StackScreenProps<MainNavigationParams, 'Dri
         onPress={() => navigation.goBack()}>
         <Text style={styles.text24}>Go Back</Text>
       </TouchableOpacity>
-      {!driverData ? (
-        <></>
-      ) : (
+      {isLoadingDriver && (
+        <View style={{alignItems: 'center'}}>
+          <Text style={{fontSize: Metrics.getHeight(60)}}>LOADING</Text>
+        </View>
+      )}
+      {isErrorDriver && (
+        <View style={{alignItems: 'center'}}>
+          <Text style={{fontSize: Metrics.getHeight(60)}}>ERROR</Text>
+        </View>
+      )}
+      {!isLoadingDriver && !isErrorDriver && driverData && (
         Object.keys(driverData.MRData.DriverTable.Drivers[0]).map(key => (
           <View key={key} style={{flexDirection: 'row'}}>
             <Text style={styles.textBold}>{key}</Text>
@@ -30,9 +39,19 @@ const Index = ({navigation, route} : StackScreenProps<MainNavigationParams, 'Dri
         ))
       )}
       <Text style={styles.text24}>Races:</Text>
+      {isLoadingDriverResults && (
+        <View style={{alignItems: 'center'}}>
+          <Text style={{fontSize: Metrics.getHeight(60)}}>LOADING</Text>
+        </View>
+      )}
+      {isErrorDriverResults && (
+        <View style={{alignItems: 'center'}}>
+          <Text style={{fontSize: Metrics.getHeight(60)}}>ERROR</Text>
+        </View>
+      )}
       <FlatList
         data={
-          !driverResultsData ? [] : driverResultsData.MRData.RaceTable.Races
+          !driverResultsData && isLoadingDriverResults && !isErrorDriverResults ? [] : driverResultsData.MRData.RaceTable.Races
         }
         renderItem={({item, index}) => (
           <TouchableOpacity key={index+'1'}>
