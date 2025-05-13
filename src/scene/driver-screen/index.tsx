@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, ScrollView, Text, Touchable, TouchableOpacity, View} from 'react-native';
 import {MainNavigationParams} from '../../navigations/main-navigation.tsx';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useGetDriverByIdQuery, useGetDriverResultsQuery} from '../../services/modules/drivers';
@@ -34,11 +34,11 @@ const Index = ({navigation, route} : StackScreenProps<MainNavigationParams, 'Dri
         data={
           !driverResultsData ? [] : driverResultsData.MRData.RaceTable.Races
         }
-        renderItem={({item}) => (
-          <View style={{marginVertical:  6, }}>
+        renderItem={({item, index}) => (
+          <TouchableOpacity key={index+'1'}>
             {Object.keys(item).map((key) =>
               typeof (item as any)[key] === 'string' ? (
-                <View key={(item as any)[key].raceName} style={styles.textBlock}>
+                <View key={key} style={styles.textBlock}>
                   <Text style={styles.textBold}>{key}</Text>
                   <Text>:</Text>
                   <Text>{(item as any)[key]}</Text>
@@ -47,7 +47,7 @@ const Index = ({navigation, route} : StackScreenProps<MainNavigationParams, 'Dri
                 <></>
               ),
             )}
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

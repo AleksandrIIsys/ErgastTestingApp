@@ -45,7 +45,7 @@ const axiosBaseQuery =
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery({
-    baseUrl: 'http://ergast.com/api/f1/',
+    baseUrl: 'https://ergast.com/api/f1/',
   }),
   extractRehydrationInfo(action: any, { reducerPath }) {
     if (action.type === REHYDRATE && action.payload) {
